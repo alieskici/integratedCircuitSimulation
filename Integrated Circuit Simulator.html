@@ -1,0 +1,139 @@
+<!--
+
+    Integrated Circuit Simulator
+    Sum of two numbers by a simulation of integrated circuit.
+    by Ali Eskici
+    github.com/alieskici
+    twitter.com/aliestech
+
+-->
+
+<html>
+    <head>
+        <title>Integrated Circuit Simulator</title>
+        <script>
+            function Sum(){
+                let s1 = document.getElementById("a").value*1;
+                let s1bin = s1.toString(2);
+                s1bin = "0000".substring(0, 4-s1bin.length) + s1bin;
+                document.getElementById("ab").innerText = s1bin;
+
+                let s2 = document.getElementById("b").value*1;
+                let s2bin = s2.toString(2);
+                s2bin = "0000".substring(0, 4-s2bin.length) + s2bin;
+                document.getElementById("bb").innerText = s2bin;
+
+                ANN(s1bin, s2bin);
+            }
+
+            /* LOGIC GATES
+            * all input numbers are 1 or 0
+            * inA, inB
+            */
+            //XOR
+            function lgXOR(inA, inB){
+                return inA*(1-inB) + (1-inA)*inB;
+            }
+            //AND
+            function lgAND(inA, inB){
+                return inA * inB;
+            }
+            //OR
+            function lgOR(inA, inB){
+                if (inA == 1 && inB == 1) {
+                    return 1;
+                }else{return inA + inB;}
+            }
+
+            //FULL ADDER
+            function FullAdder(A, B, C){
+                let o1, o2, o3, o4, o5;
+                
+                o1 = lgXOR(A, B);
+                o2 = lgAND(A, B);
+                o3 = lgXOR(o1, C);
+                o4 = lgAND(o1, C);
+                o5 = lgOR(o4, o2);
+
+                return [o3, o5];
+            }
+
+            //TOPLAMA YAPAN DEVRE
+            function ANN(an, bn){
+                let fa0, fa1, fa2, fa3; //FullAdder subrutininden gelen degerler
+                let sum0, sum1, sum2, sum3; //ust cikislar
+                let c0, c1, c2, c3; //kalanlar
+                
+                let inA0 = parseInt(an[0]);
+                let inA1 = parseInt(an[1]);
+                let inA2 = parseInt(an[2]);
+                let inA3 = parseInt(an[3]);
+                
+                let inB0 = parseInt(bn[0]);
+                let inB1 = parseInt(bn[1]);
+                let inB2 = parseInt(bn[2]);
+                let inB3 = parseInt(bn[3]);
+
+                fa0 = FullAdder(inA3, inB3, 0);
+                sum0 = fa0[0];
+                c0 = fa0[1];    //FullAdder'in ikinci sonuc indisini atadik
+                
+                fa1 = FullAdder(inA2, inB2, c0);
+                sum1 = fa1[0];
+                c1 = fa1[1];
+                
+                fa2 = FullAdder(inA1, inB1, c1);
+                sum2 = fa2[0];
+                c2 = fa2[1];
+
+                fa3 = FullAdder(inA0, inB0, c2);
+                sum3 = fa3[0];
+                c3 = fa3[1];     
+
+                //return sum0.toString() + sum1.toString() + sum2.toString() + sum3.toString();
+                document.getElementById("r").innerText = sum3.toString() + sum2.toString() + sum1.toString() + sum0.toString();
+            }
+        </script>
+        <style>
+            th {width:150px; background-color: #ddd; padding: 4px; text-align: center}
+            td {height: 40px; background-color: #eee; padding: 4px; text-align: center}
+            input{width:80px; height: 40px; font-size: 36px;}
+            label{font-family: 'Courier New', Courier, monospace; font-size: 36px; font-weight: bold}
+        </style>
+    </head>
+    <body>
+        <table >
+            <thead>
+                <tr>
+                    <th style="font-size:36px">A</th>
+                    <th style="font-size:36px">B</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="number" onkeydown="return false;" value="1" id="a" max="7" min="0" maxlength="1" onchange="Sum()"></td>
+                    <td><input type="number" onkeydown="return false;" value="2" id="b" max="7" min="0" maxlength="1" onchange="Sum()"></td>
+                </tr>
+                <tr>
+                    <td><label id="ab">0001</label></td>
+                    <td><label id="bb">0010</label></td>
+                </tr>
+                <!--
+                <tr>
+                    <td colspan="2"><input type="button" value="Do" onclick="Sum()"></td>
+                </tr>
+                -->
+                <tr>
+                    <td colspan="2"><label id="r">0011</label></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br><br><br><br><hr>
+        <div>
+            Integrated Circuit Simulator
+            <br>Sum of two three-digits binary numbers.
+            <br><br>Written by Ali Eskici<br>github.com/alieskici<br>2018 September
+        </div>
+    </body>
+</html>
